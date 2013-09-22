@@ -15,8 +15,9 @@ class Spork::TestFramework::MiniTest < Spork::TestFramework
     paths.each do |path|
       load path
     end
-
-    ::MiniTest.new.run(opts)
+    
+    puts "Sent options: #{opts}"
+    ::MiniTest.run(opts)
   end
 
   def parse_options(argv)
