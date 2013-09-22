@@ -12,4 +12,5 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "spork"
+  s.add_dependency "minitest", "~> 5.0.8"
 end
