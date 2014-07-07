@@ -1,6 +1,6 @@
 class Spork::TestFramework::MiniTest < Spork::TestFramework
   DEFAULT_PORT = 8988
-  DEFAULT_HELPER_FILES = %w[test/minitest_helper.rb test/test_helper.rb spec/spec_helper.rb]
+  DEFAULT_HELPER_FILES = %w[test/test_helper.rb]
 
   def self.helper_file
     ENV['HELPER_FILE'] || DEFAULT_HELPER_FILES.find{ |f| File.exist?(f) }
@@ -8,7 +8,7 @@ class Spork::TestFramework::MiniTest < Spork::TestFramework
 
   def run_tests(argv, stderr, stdout)
     require "minitest/unit"
-    ::MiniTest::Unit.output = stdout
+    # ::MiniTest::Unit.output = stdout
 
     argv.each_with_index do |arg, idx|
       if arg =~ /-I(.*)/
@@ -42,8 +42,16 @@ class Spork::TestFramework::MiniTest < Spork::TestFramework
         argv[idx] = nil
       end
     end
-    argv.compact!
 
-    ::MiniTest::Unit.new.run(argv)
+    puts "Sent options: #{opts}"
+    ::MiniTest.run(opts)
+  end
+
+  def parse_options(argv)
+    paths, opts = argv.slice_before("--").to_a
+    paths ||= []
+    opts ||= []
+    opts.shift
+    [paths, opts]
   end
 end
