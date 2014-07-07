@@ -10,37 +10,10 @@ class Spork::TestFramework::MiniTest < Spork::TestFramework
     require "minitest/unit"
     # ::MiniTest::Unit.output = stdout
 
-    argv.each_with_index do |arg, idx|
-      if arg =~ /-I(.*)/
-        if $1 == ''
-          # Path is next argument.
-          include_path = argv[idx + 1]
-          argv[idx + 1] = nil # Will be squashed when compact called.
-        else
-          include_path = $1
-        end
-        $LOAD_PATH << include_path
-        argv[idx] = nil
-      elsif arg =~ /-r(.*)/
-        if $1 == ''
-          # File is next argument.
-          require_file = argv[idx + 1]
-          argv[idx + 1] = nil # Will be squashed when compact called.
-        else
-          require_file = $1
-        end
-        require require_file
-        argv[idx] = nil
-      elsif arg =~ /^-e$/
-        eval argv[idx + 1]
-        argv[idx] = argv[idx + 1] = nil
-      elsif arg == '--'
-        argv[idx] = nil
-        break
-      elsif !arg.nil?
-        require arg
-        argv[idx] = nil
-      end
+    paths, opts = parse_options(argv)
+
+    paths.each do |path|
+      load path
     end
 
     puts "Sent options: #{opts}"
